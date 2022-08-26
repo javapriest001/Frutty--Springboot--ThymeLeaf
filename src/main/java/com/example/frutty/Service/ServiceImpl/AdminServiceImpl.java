@@ -1,5 +1,7 @@
 package com.example.frutty.Service.ServiceImpl;
 
+import com.example.frutty.Exception.CustomerNotFoundException;
+import com.example.frutty.Exception.PasswordMismatchException;
 import com.example.frutty.Exception.ProductNotFoundException;
 import com.example.frutty.Model.Admin;
 import com.example.frutty.Model.Product;
@@ -39,9 +41,8 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public Product updateProduct(Admin admin, int id) {
-        Product update = findProductById(id);
-        return  productRepository.save(update);
+    public Product updateProduct(Product product) {
+        return  productRepository.save(product);
     }
 
     @Override
@@ -50,6 +51,22 @@ public class AdminServiceImpl implements AdminService {
         return true;
     }
 
+    @Override
+    public boolean loginAdmin(String email, String password) throws CustomerNotFoundException, PasswordMismatchException {
+        boolean isLoggedIn = false;
+        var admin = adminRepository.getAdminByEmail(email).orElseThrow(()-> new CustomerNotFoundException(email));
+        if (admin.getPassword().equalsIgnoreCase(password)){
+            isLoggedIn = true;
+        }else {
+            throw new PasswordMismatchException(email);
+        }
+        return isLoggedIn;
+    }
+
+    public Admin getCustomerEmail(String email){
+        return adminRepository.getAdminByEmail(email)
+                .orElseThrow(()-> new CustomerNotFoundException(email));
+    }
     @Override
     public Product findProductById(int id) {
         return productRepository.findById(id)

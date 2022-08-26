@@ -9,9 +9,10 @@ public interface AdminService {
     Admin registerAdmin(Admin admin);
     Product getSingleProduct(int id);
     Product addNewProduct(Product product);
-    Product updateProduct(Admin admin , int id);
+    Product updateProduct(Product product);
     boolean deleteProduct(int id);
-
+    Admin getCustomerEmail(String email);
+    boolean loginAdmin(String email, String password);
     Product findProductById(int id);
 
     List<Product> getAllProducts();

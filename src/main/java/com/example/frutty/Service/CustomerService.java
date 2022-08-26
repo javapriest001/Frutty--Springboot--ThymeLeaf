@@ -10,9 +10,12 @@ import java.util.Map;
 
 public interface CustomerService {
     Customer registerCustomer(Customer customer);
+
+    boolean login(String email , String password);
     Product findProductById(int id);
     Map<Integer, Product> addToCart(int id , int cusromerId);
     Product getSingleProduct(int id);
     List<Product> getAllProducts();
     Wishlist addToWishList(Wishlist wishlist);
+    Customer getCustomerEmail(String email);
 }

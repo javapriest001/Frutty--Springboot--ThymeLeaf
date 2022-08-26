@@ -11,11 +11,11 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-
 @Table(name = "Products")
 public class Product {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
     private String Description;
@@ -23,6 +23,9 @@ public class Product {
     private String category;
     private String image;
     private int quantityInStock;
+
+    @OneToOne(mappedBy = "product")
+    private Wishlist wishlist;
 
     @Transient
     private int cartQuantity;
