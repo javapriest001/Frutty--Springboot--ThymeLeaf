@@ -112,4 +112,8 @@ public class CustomerServiceImpl implements CustomerService {
                 .orElseThrow(()-> new CustomerNotFoundException(email));
     }
 
+    public int deleteWishlistByUserIdAndProductId(int customer_id , int product_id){
+        return wishlistRepository.deleteWishlistByUserIdAndProductId(customer_id , product_id);
+    }
+
 }

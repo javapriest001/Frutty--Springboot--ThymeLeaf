@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -24,8 +25,8 @@ public class Customer {
     private String email;
     private String password;
 
-    @OneToOne(mappedBy = "customer")
-    private Wishlist wishlist;
+    @OneToMany(mappedBy = "customer",  cascade = CascadeType.ALL, orphanRemoval = true,  fetch=FetchType.LAZY)
+    private List<Wishlist> wishlists;
 
     @Transient
     private Map<Integer, Product> cart = new HashMap<>();

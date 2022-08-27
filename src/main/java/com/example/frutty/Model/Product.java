@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 
 @Data
@@ -24,8 +25,8 @@ public class Product {
     private String image;
     private int quantityInStock;
 
-    @OneToOne(mappedBy = "product")
-    private Wishlist wishlist;
+    @OneToMany(mappedBy = "product" ,  cascade = CascadeType.ALL, orphanRemoval = true,  fetch=FetchType.LAZY)
+    private List<Wishlist> wishlists;
 
     @Transient
     private int cartQuantity;

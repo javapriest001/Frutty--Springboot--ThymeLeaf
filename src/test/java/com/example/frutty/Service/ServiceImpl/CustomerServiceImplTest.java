@@ -44,10 +44,12 @@ class CustomerServiceImplTest {
     @BeforeEach
     void setUp() {
         Map<Integer, Product> cart = new HashMap<>();
-        wishlist = new Wishlist(1 , 1, 1);
-        customer = new Customer(1, "vincent" , "enwerevincent@gmail.com", "Fbiswats1", cart);
-        product = new Product(1, "Pineapple" , "Tasty and fruity" , 9.7, "Round" , "0xEdfccee" , 12 , 0);
-        product2 = new Product(2, "apple" , "Tasty and fruity" , 9.7, "Round" , "0xEdfccee" , 12 , 0);
+         List<Wishlist> wishlists = new ArrayList<>();
+
+        customer = new Customer(1, "vincent" , "enwerevincent@gmail.com", "Fbiswats1", wishlists, cart);
+        product = new Product(1, "Pineapple" , "Tasty and fruity" , 9.7, "Round" , "0xEdfccee" , 12, wishlists , 0);
+        product2 = new Product(2, "apple" , "Tasty and fruity" , 9.7, "Round" , "0xEdfccee" , 12 , wishlists, 0);
+        wishlist = new Wishlist(1 , customer, product);
         List<Product> productList = new ArrayList<>(Arrays.asList(product , product2));
         when(wishlistRepository.save(wishlist)).thenReturn(wishlist);
         when(customerRepository.save(customer)).thenReturn(customer);

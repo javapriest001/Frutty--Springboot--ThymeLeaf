@@ -18,4 +18,8 @@ public interface CustomerService {
     List<Product> getAllProducts();
     Wishlist addToWishList(Wishlist wishlist);
     Customer getCustomerEmail(String email);
+
+   Customer getCustomerId(int customerId);
+
+    int deleteWishlistByUserIdAndProductId(int customer_id, int product_id);
 }

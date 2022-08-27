@@ -5,6 +5,7 @@ import com.example.frutty.Model.Product;
 import com.example.frutty.Model.Wishlist;
 import com.example.frutty.Repository.CustomerRepository;
 import com.example.frutty.Service.CustomerService;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -53,6 +54,8 @@ public class CustomerController {
         if (!isLoggedIn){
             return "redirect:/Customer/login";
         }else {
+            Customer customer1 = customerService.getCustomerEmail(customer.getEmail());
+            session.setAttribute("id", customer1.getId());
             session.setAttribute("email" , customer.getEmail());
             return "redirect:/Customer/dashboard";
         }
@@ -60,36 +63,50 @@ public class CustomerController {
 
     @GetMapping(value = "/dashboard")
     public String dashboard(Model model , HttpSession session){
-        List<Product> productList = customerService.getAllProducts();
-        String email = (String) session.getAttribute("email");
-        Customer customer = customerService.getCustomerEmail(email);
-        model.addAttribute("products" , productList);
-        model.addAttribute("id" , customer.getId());
-
         if(session.getAttribute("email") == null){
             return "redirect:/Customer/login";
         }else {
+            List<Product> productList = customerService.getAllProducts();
+            String email = (String) session.getAttribute("email");
+            Customer customer = customerService.getCustomerEmail(email);
+            Map<Integer , Product> cart = (Map<Integer, Product>) session.getAttribute("cart");
+            if(cart != null){
+                model.addAttribute("cartSize" , cart.size());
+            }
+            model.addAttribute("cartList" , cart);
+            model.addAttribute("products" , productList);
+            model.addAttribute("id" , customer.getId());
+            model.addAttribute("cartList", session.getAttribute("cart"));
+            model.addAttribute("cartS", session.getAttribute("cart"));
             return "Customer/dashboard";
         }
+
     }
 
     @PostMapping(value = "/addToCart")
     public String addToCart(Model model , HttpSession session, @RequestParam String userId , @RequestParam String productId){
         int id = Integer.parseInt(productId);
         int customerId = Integer.parseInt(userId);
-      Map<Integer , Product>cart =  customerService.addToCart(id , customerId);
-      model.addAttribute("cartSize", cart.size());
-      session.setAttribute("cart" , cart);
-      session.setAttribute("cartSize" , cart.size());
-        System.out.println(session.getAttribute("cartSize"));
-
-
-        System.out.println(cart);
-      return "redirect:Customer/dashboard";
+        Map<Integer , Product>cart =  customerService.addToCart(id , customerId);
+        session.setAttribute("cart" , cart);
+        session.setAttribute("cartSize", cart.size());
+      return "redirect:/Customer/dashboard";
     }
     @PostMapping("/addToWishlist")
-    public String AddToCart(@ModelAttribute Wishlist wishlist){
+    public String addToWishList(@RequestParam(value = "user_id") String user_id , @RequestParam(value = "product_id") String product_id){
+        Product product = customerService.findProductById(Integer.parseInt(product_id));
+        Customer customer = customerService.getCustomerId(Integer.parseInt(user_id));
+        Wishlist wishlist = new Wishlist();
+        wishlist.setCustomer(customer);
+        wishlist.setProduct(product);
+        System.out.println(wishlist);
         customerService.addToWishList(wishlist);
+        return "redirect:/Customer/dashboard";
+    }
+
+    @PostMapping("/deleteWishlist")
+    public String deleteWishlist(@RequestParam(value = "user_id") String user_id , @RequestParam(value = "product_id") String product_id){
+        customerService.deleteWishlistByUserIdAndProductId(Integer.parseInt(user_id), Integer.parseInt(product_id));
         return "redirect:/Customer/dashboard";
     }
 
